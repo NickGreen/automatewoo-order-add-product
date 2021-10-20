@@ -1,7 +1,4 @@
 <?php
-
-namespace To51\AW_Action;
-
 use AutomateWoo\Action;
 use AutomateWoo\Fields;
 
@@ -189,7 +186,11 @@ class Action_Order_Add_Free_Product extends Action {
 	public function get_title( $prepend_group = false ) {
 		$this->maybe_load_admin_details();
 		$group = $this->get_group();
-		$title = $this->title ?: '';
+		if ( $this->title ) {
+			$title = $this->title;
+		} else {
+			$title = '';
+		}
 
 		if ( $prepend_group && __( 'Other', 'automatewoo' ) !== $group ) {
 			return $group . ' - ' . $title;
@@ -215,7 +216,12 @@ class Action_Order_Add_Free_Product extends Action {
 	 */
 	public function get_description() {
 		$this->maybe_load_admin_details();
-		return $this->description ?: '';
+		if ( $this->description ) {
+			$description = $this->description;
+		} else {
+			$description = '';
+		}
+		return $description;
 	}
 
 	/**
@@ -224,7 +230,12 @@ class Action_Order_Add_Free_Product extends Action {
 	 * @return string
 	 */
 	public function get_name() {
-		return $this->name ?: '';
+		if ( $this->name ) {
+			$name = $this->name;
+		} else {
+			$name = '';
+		}
+		return $name;
 	}
 
 	/**
@@ -249,8 +260,10 @@ class Action_Order_Add_Free_Product extends Action {
 		return '<p class="aw-field-description">' . $this->get_description() . '</p>';
 	}
 
-	function run() {
-		if ( ! $order = $this->workflow->data_layer()->get_order() ) {
+	public function run() {
+		if ( $this->workflow->data_layer()->get_order() ) {
+			$order = $this->workflow->data_layer()->get_order();
+		} else {
 			return;
 		}
 		$product = wc_get_product( $this->get_option( 'product' ) );
